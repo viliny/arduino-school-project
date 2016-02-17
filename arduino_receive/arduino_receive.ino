@@ -1,20 +1,3 @@
-/*
- Copyright (C) 2012 James Coliz, Jr. <maniacbug@ymail.com>
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- version 2 as published by the Free Software Foundation.
- 
- Update 2014 - TMRh20
- */
-
-/**
- * Simplest possible example of using RF24Network,
- *
- * RECEIVER NODE
- * Listens for messages from the transmitter and prints them out.
- */
-
 #include <RF24Network.h>
 #include <RF24.h>
 #include <SPI.h>
@@ -42,9 +25,12 @@ struct payload_p {                  // Structure of our payload
 };
 
 
-int incomingByte = 0;
 
+unsigned long serialdata;
+int inbyte;
 
+bool NetworkNeedsEpoch = 0;
+unsigned long ReceivedEpoch = 0;
 
 void setup(void)
 {
@@ -62,22 +48,18 @@ void setup(void)
 }
 
 
-bool NetworkNeedsEpoch = 0;
-unsigned long ReceivedEpoch = 0;
-
 void loop(void){
-
-  
   network.update();                  // Check the network regularly
 
-   unsigned long now = millis();              // If it's time to send a message, send it!
-  if ( now - last_sent >= interval  )
-  {
-    last_sent = now;
-    for (int node = 0; node < 4; node++) {
-    sendReq(other_nodes[node]);
-    }   
-  }
+   unsigned long now = millis(); // If it's time to send a message, send it!
+   
+    if ( now - last_sent >= interval  )
+     {
+        last_sent = now;
+        for (int node = 0; node < 4; node++) {
+        sendReq(other_nodes[node]);
+      }   
+    }
 
   while ( network.available() ) {     // Is there anything ready for us?
     
@@ -97,38 +79,38 @@ void loop(void){
     Serial.println(t0);
   }
   
-  String content = "";
-  char character;
-
-  delay(250);
-  while(Serial.available()) {
-      character = Serial.read();
-      content.concat(character);
-  }
-
-  if (content != "") {
-    Serial.println(content);
-    if (content[0] == 'e')
+  
+    if (Serial.available() > 0)
     {
-      Serial.println("oh e!");
-      NetworkNeedsEpoch = 1;
-      content.remove(0,1);
-      char charBuf[50];
-      char* epochchars = content.toCharArray(charBuf, 50);
-      ReceivedEpoch = atol(epochchars);
-      Serial.println(content);
-      Serial.println(ReceivedEpoch);
+      unsigned long DATA = getSerial();
+      Serial.println(DATA);
     }
     
-  }
+  
 
-  if (NetworkNeedsEpoch == 1 )
+  if (NetworkNeedsEpoch == 1)
   {
     NetworkNeedsEpoch = 0;
     for (int node = 0; node < 4; node++) {
     sendEpo(other_nodes[node], ReceivedEpoch);
   }
   }
+}
+
+long getSerial()
+{
+  unsigned long start = millis(); 
+  serialdata = 0;
+  while (inbyte != ';' && (millis() - start) < 3000)
+  {
+    inbyte = Serial.read(); 
+    if (inbyte > 0 && inbyte != ';')
+    {
+      serialdata = serialdata * 10 + inbyte - '0';
+    }
+  }
+  inbyte = 0;
+  return serialdata;
 }
 
 void sendReq(uint16_t other_node)
@@ -153,7 +135,6 @@ void sendReq(uint16_t other_node)
 
 void sendEpo(uint16_t other_node, long epoch)
 {
-
     int action = 50;
     int additional_action = epoch;
     
@@ -168,7 +149,6 @@ void sendEpo(uint16_t other_node, long epoch)
     }
     else
       Serial.println("TX;0");
-
   
 }
 

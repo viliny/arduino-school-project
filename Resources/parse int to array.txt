@@ -1,0 +1,57 @@
+
+
+#include <stdio.h> // to get sprintf()
+#include <stdlib.h> // to get itoa()
+
+void setup( void )
+{
+ Serial.begin( 9600 );
+
+ int  asdf = 12345;
+ int  saveVal = asdf;
+ char qwer[ 8 ]; // I give it a little extra room because of the last two examples
+
+ int  divider = 10000; // work digits high to low, left to right
+ byte i = 0; // what char in qwer to fill next
+ byte firstNonZero = 0; // to keep out leading zeros
+
+ while ( divider > 0 )
+ {
+   if ( firstNonZero == 0 )
+   {
+     if ( asdf >= divider )
+    {
+      firstNonZero = 1;
+    } 
+   }
+
+   if ( firstNonZero > 0 )
+   { 
+     qwer[ i++ ] = '0' + ( asdf / divider ); // ++ increments AFTER use 
+     asdf %= divider; // asdf is now the remainder of the division
+   }
+   
+   divider /= 10; // move to the next digit
+ }
+ 
+ qwer[ i ] = 0; // add the NULL string terminator
+ 
+ Serial.println( "\nbehind the text -- numbers" ); // \n is ASCII newline
+ Serial.println( "hang in there!\n" ); // \n is ASCII newline
+ Serial.print( "the original int is " );
+ Serial.println( saveVal );
+ Serial.print( "the roll your own converted text is " );
+ Serial.println( qwer );
+
+ sprintf( qwer, "%d", saveVal );
+ Serial.print( "\nthe sprintf converted text is " );
+ Serial.println( qwer );
+ 
+ itoa( saveVal, qwer, 10 ); // 10 is the radix for decimal result
+ Serial.print( "\nthe itoa converted text is " );
+ Serial.println( qwer );
+}
+
+void loop( void )
+{
+}
