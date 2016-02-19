@@ -10,8 +10,9 @@ const uint16_t this_node = 00;    // Address of our node in Octal format ( 04,03
 //const uint16_t other_node = 02;   // Address of the other node in Octal format
 const uint16_t other_nodes[5] = {01, 02, 03, 04, 05};
 
-const unsigned long interval = 10000; //ms  // How often to send
+const unsigned long interval = 8000; //ms  // How often to send
 unsigned long last_sent;             // When did we last send?
+unsigned long last_sync;
 
 struct payload_t {                 // Structure of our payload
   unsigned int h;
@@ -25,12 +26,24 @@ struct payload_p {                  // Structure of our payload
 };
 
 
+int RoundAbout = 0;
 
 unsigned long serialdata;
+
 int inbyte;
 
 bool NetworkNeedsEpoch = 0;
 unsigned long ReceivedEpoch = 0;
+
+
+
+void smartDelay(long milliseconds)
+{
+  unsigned long sDelay = 0;
+  sDelay = millis();
+    while ((millis() - sDelay) < milliseconds)
+    {}
+}
 
 void setup(void)
 {
@@ -39,51 +52,79 @@ void setup(void)
  
   SPI.begin();
   radio.setPALevel(RF24_PA_HIGH);
-  radio.setDataRate(RF24_250KBPS);
-  radio.setCRCLength(RF24_CRC_8);
+  radio.setDataRate(RF24_2MBPS);
+  radio.setCRCLength(RF24_CRC_16);
+  radio.enableDynamicPayloads();
+  radio.setRetries (500, 3);
+  radio.setAutoAck(true);
   radio.begin();
-  network.begin(/*channel*/ 90, /*node address*/ this_node);
+  network.begin(/*channel*/ 108, /*node address*/ this_node);
 
   
 }
 
 
 void loop(void){
-  network.update();                  // Check the network regularly
+  
+   // Check the network regularly
 
    unsigned long now = millis(); // If it's time to send a message, send it!
    
     if ( now - last_sent >= interval  )
      {
         last_sent = now;
-        for (int node = 0; node < 4; node++) {
-        sendReq(other_nodes[node]);
-      }   
+        
+        sendReq(other_nodes[RoundAbout]);
+
+        if (RoundAbout < 4)
+        {
+          RoundAbout++;
+        }
+        else 
+        {
+          RoundAbout = 0;
+        }
+      
     }
 
+    smartDelay(1000);
+
+    network.update();
+    int sNode;
+    float h0;
+    float t0;
+
   while ( network.available() ) {     // Is there anything ready for us?
-    
+
     RF24NetworkHeader header;        // If so, grab it and print it out
     payload_t payload;
     network.read(header,&payload,sizeof(payload));
+    
+    sNode = payload.n;
+    
+    h0 = payload.h / 100;
+    
+    t0 = payload.t / 100;
+
     Serial.print("ND;");
-    int sNode = payload.n;
     Serial.print(sNode);
     Serial.print(";");
     Serial.print("HU;");
-    float h0 = payload.h / 100.00;
     Serial.print(h0);
     Serial.print(";");
     Serial.print("TP;");
-    float t0 = payload.t / 100.00;
     Serial.println(t0);
+
+    
   }
   
-  
+
+    
     if (Serial.available() > 0)
     {
       unsigned long DATA = getSerial();
-      Serial.println(DATA);
+      ReceivedEpoch = DATA;
+      NetworkNeedsEpoch = 1;
     }
     
   
@@ -91,20 +132,23 @@ void loop(void){
   if (NetworkNeedsEpoch == 1)
   {
     NetworkNeedsEpoch = 0;
-    for (int node = 0; node < 4; node++) {
+    for (int node = 0; node < 5; node++) {
     sendEpo(other_nodes[node], ReceivedEpoch);
+    smartDelay(1000);
   }
+  
   }
+  
 }
 
 long getSerial()
 {
   unsigned long start = millis(); 
   serialdata = 0;
-  while (inbyte != ';' && (millis() - start) < 3000)
+  while (inbyte != '&' && (millis() - start) < 3000)
   {
     inbyte = Serial.read(); 
-    if (inbyte > 0 && inbyte != ';')
+    if (inbyte > 0 && inbyte != '&')
     {
       serialdata = serialdata * 10 + inbyte - '0';
     }
@@ -116,7 +160,7 @@ long getSerial()
 void sendReq(uint16_t other_node)
 {
     int action = 99;
-    int additional_action = 00;
+    int additional_action = 99;
     
     Serial.print("RQ;");
     Serial.print(other_node);
@@ -136,7 +180,7 @@ void sendReq(uint16_t other_node)
 void sendEpo(uint16_t other_node, long epoch)
 {
     int action = 50;
-    int additional_action = epoch;
+    long additional_action = epoch;
     
     Serial.print("EP;");
     Serial.print(other_node);
@@ -145,10 +189,12 @@ void sendEpo(uint16_t other_node, long epoch)
     RF24NetworkHeader header(/*to node*/ other_node);
     bool ok = network.write(header,&payload,sizeof(payload));
     if (ok) {
-      Serial.println("TX;1");     
+      Serial.println("TX;1");
     }
     else
+    {
       Serial.println("TX;0");
+    }
   
 }
 

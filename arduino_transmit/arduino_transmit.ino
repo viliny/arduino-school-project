@@ -1,19 +1,3 @@
-/*
- Copyright (C) 2012 James Coliz, Jr. <maniacbug@ymail.com>
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- version 2 as published by the Free Software Foundation.
- 
- Update 2014 - TMRh20
- */
-
-/**
- * Simplest possible example of using RF24Network 
- *
- * TRANSMITTER NODE
- * Every 2 seconds, send a payload to the receiver node.
- */
 
 #include <RF24Network.h>
 #include <RF24.h>
@@ -22,7 +6,7 @@
 
 #define DHTPIN 4 
 
-#define DHTTYPE DHT11
+#define DHTTYPE DHT22
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -30,7 +14,7 @@ RF24 radio(7,8);                    // nRF24L01(+) radio attached using Getting 
 
 RF24Network network(radio);          // Network uses that radio
 
-const uint16_t this_node = 03;        // Address of our node in Octal format
+const uint16_t this_node = 01;        // Address of our node in Octal format
 const uint16_t other_node = 00;       // Address of the other node in Octal format
 
 //const unsigned long interval = 10000; //ms  // How often to send 'hello world to the other unit
@@ -60,11 +44,22 @@ void setup(void)
  
   SPI.begin();
   radio.setPALevel(RF24_PA_HIGH);
-  radio.setDataRate(RF24_250KBPS);
-  radio.setCRCLength(RF24_CRC_8);
+  radio.setDataRate(RF24_2MBPS);
+  radio.setCRCLength(RF24_CRC_16);
+  radio.enableDynamicPayloads();
+  radio.setRetries (500, 3);
+  radio.setAutoAck(true);
   radio.begin();
-  network.begin(/*channel*/ 90, /*node address*/ this_node);
+  network.begin(/*channel*/ 108, /*node address*/ this_node);
   dht.begin();
+}
+
+void smartDelay(long milliseconds)
+{
+  unsigned long sDelay = 0;
+  sDelay = millis();
+    while ((millis() - sDelay) < milliseconds)
+    {}
 }
 
 void loop() {
@@ -83,7 +78,6 @@ void loop() {
     if ((int)payload.ac == 99)
     {
       Serial.println("Payload indicated request for temperature to base node");
-      delay(2000);
       unsigned long now = millis();
       last_sent = now;
       sendTemp();
@@ -92,7 +86,6 @@ void loop() {
     else if ((int)payload.ac == 50)
     {
       Serial.println("Payload contains epoch time syncronization data");
-      delay(2000);
       myCurrentEpoch = (long)payload.aac;
       Serial.println((long)payload.aac);
       Serial.print("My new epoch time is: ");
@@ -100,24 +93,21 @@ void loop() {
     }
   }
 
-  loopEndMillis = millis();
+  smartDelay(1000);
+  myCurrentEpoch += ((millis() - loopStartMillis) / 1000);
 
-  myCurrentEpoch += (loopEndMillis - loopStartMillis);
 }
 
 void sendTemp()
 {
-  
+    smartDelay(2000);
+    
     float h0 = dht.readHumidity() * 100;
     float t0 = dht.readTemperature() * 100;
-    delay(2000);
+    
     int h = (int) h0;
     int t = (int) t0;
     int n = (int)this_node;
-    
-
-
-   
     
     Serial.print("Sending...");
     payload_t payload = { h, t, n };
@@ -125,7 +115,8 @@ void sendTemp()
     bool ok = network.write(header,&payload,sizeof(payload));
     if (ok) {
       Serial.println("ok.");
-      
+      Serial.print("My epoch time is currently: ");
+      Serial.println(myCurrentEpoch);
     }
     else
       Serial.println("failed.");
