@@ -260,4 +260,20 @@ $(function() {
     $( "#endTime" ).datepicker( "option", "dateFormat", "d.m.yy" );
 });
 
+$('#chartSubmit').click(function(){
+	var deviceId = $("#deviceSelect").val();
+	var startTime = $( "#startTime" ).val();
+	var endTime = $("#endTime").val();
+	
+		$.ajax({
+				method: 'POST',
+				url: "ajax.php",
+				dataType: "json",
+				data: {mode: 'getChart', deviceId: deviceId,startTime: startTime,endTime: endTime},
+				success: function(data){
+					alert(data.test);
+				}
+			});	//ajaxin päättävä
+});
+
 }); //document readyn päättävä
