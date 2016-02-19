@@ -1,0 +1,12 @@
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\bin\Debug\Testestorone.exe.config
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\bin\Debug\Testestorone.exe
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\bin\Debug\Testestorone.pdb
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\bin\Debug\System.Data.SQLite.dll
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\bin\Debug\System.Data.SQLite.xml
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.csprojResolveAssemblyReference.cache
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.Form1.resources
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.Properties.Resources.resources
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.csproj.GenerateResource.Cache
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.exe
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.pdb
+c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.NameSensor.resources
