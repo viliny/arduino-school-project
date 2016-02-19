@@ -1,0 +1,233 @@
+/*remote monitorin uin tyyli*/
+
+html {
+  height: 100%;
+}
+
+body{
+  font-family: arial;
+  background-color: #ffffff;
+  height: 100%;
+  margin: 0;
+}
+
+h1{
+  padding-top: 5px;
+  color: #fff;
+  margin: 0;
+}
+
+#footer {
+  font-size: 10px;
+  color: #ffffff;
+  text-align: center;
+  width: 100%;
+  background-color: #003380;
+}
+
+.right {
+	text-align:right;
+}
+
+#header h1{
+  text-shadow: 2px 2px #0055DD;
+  margin-left:10px;
+}
+
+#wrapper{
+  height:100%;
+  width: 100%;
+  margin: auto;
+}
+
+#header{
+  width: 100%;
+  height: 50px;
+  background-color: #003380;
+}
+
+#content {
+  width: 100%;
+  height: 100%;
+}
+
+#menuContainer {
+  float: left;
+  height: 100%;
+  width: 15%;
+  background-color: #0066FF;
+}
+
+#mainContent{
+  float: left;
+  width: 85%;
+  height: 100%;
+  background-color: #e5e5ff;
+  background-image: url(wifi.png);
+  background-repeat: no-repeat;
+  background-size: 700px;
+  background-position: center;
+}
+
+.views {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.views h1{
+  margin-top: 10px;
+  text-align: center; 
+  color: #003380;
+}
+
+#setupTable{
+  padding: 5px;
+  margin:auto;
+  margin-top: 15px;
+  border: 1px solid #00001A;
+  border-radius: 5px;
+  background-color: rgba(120,180,255,0.8);
+}
+
+#setupTable td {
+  text-align: right;
+}
+
+button{
+  display: block;
+  margin: auto;
+  background-color: #E5E5FF;
+}
+
+input{
+  background-color: #E5E5FF;
+}
+
+select{
+   display: block;
+  margin: auto;
+  background-color: #E5E5FF;
+}
+
+#addNew{
+  height: 100%;
+  width: 100%;
+  font-size: 60px;
+  text-align: center;
+}
+
+#addNew:hover{
+  color: #CCCCCC;
+  background-color: rgba(0,0,0,0.2);
+}
+
+#addNew:active{
+  background-color: rgba(255,255,255,0.2);
+  color: #000000;
+}
+
+.box {
+  float: left;
+  position: relative;
+  margin: 10px;
+  width: 240px;
+  min-height: 100px;
+  display: inline-block;
+  border: 2px solid #00001A;
+  background-color:rgba(120,180,255,0.8);
+  border-radius: 15px;
+  box-shadow: 2px 2px 2px white;
+}
+
+.boxHeader {
+  border-radius: 13px 13px 0 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  padding-top: 10px;
+  text-align: center;
+  height: 30px;
+  background-color: #003380;
+}
+
+.delete{
+  width: 25px;
+  display: inline-block;
+  right: 7px;
+  top:3px;
+  background-color: rgba(255,255,255,0.6);
+  color: black;
+  border:2px solid white;
+  padding: 5px;
+  position: absolute;
+  border-radius: 3px;
+}
+
+.delete:hover{
+  background-color: rgba(255,40,40,0.8);
+  color: white;
+}
+
+.alert {
+  background-color: #FF0000;
+  background-image: url('warning.png');
+  background-repeat: no-repeat;
+  background-size: 40px;
+  background-position: 2% center;
+}
+
+.box span {
+  display: block;
+  padding: 3px;
+}
+
+.punainen {
+  color: red;
+}
+
+.dataTable {
+  display: block;
+  margin: auto;
+  width: 90%;
+} 
+
+.dataTable td{
+  width: 135px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+#menu{
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  color: white;
+  display: block;
+  padding: 5px;
+  text-align: center;
+  font-weight: bold;
+  background-color: #0055DD;
+  transition: background 0.2s ease-in-out;
+
+}
+
+li:hover {
+  background-color: #003380;
+  color: white;
+  cursor: pointer;
+}
+
+.selected {
+  color: #0055DD;
+  background-color: #e5e5ff;
+}
+
+#chartOptions{
+  margin:auto;
+  border: 1px solid #00001A;
+  border-radius: 5px;
+  background-color:rgba(120,180,255,0.8);
+}
