@@ -10,3 +10,15 @@ c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\
 c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.exe
 c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.pdb
 c:\users\viliny\documents\visual studio 2013\Projects\Testestorone\Testestorone\obj\Debug\Testestorone.NameSensor.resources
+H:\arduino school project\Windows\Testestorone\Testestorone\bin\Debug\Testestorone.exe.config
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.exe
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.pdb
+H:\arduino school project\Windows\Testestorone\Testestorone\bin\Debug\Testestorone.exe
+H:\arduino school project\Windows\Testestorone\Testestorone\bin\Debug\Testestorone.pdb
+H:\arduino school project\Windows\Testestorone\Testestorone\bin\Debug\System.Data.SQLite.dll
+H:\arduino school project\Windows\Testestorone\Testestorone\bin\Debug\System.Data.SQLite.xml
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.csprojResolveAssemblyReference.cache
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.Form1.resources
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.NameSensor.resources
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.Properties.Resources.resources
+H:\arduino school project\Windows\Testestorone\Testestorone\obj\Debug\Testestorone.csproj.GenerateResource.Cache

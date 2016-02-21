@@ -2,7 +2,9 @@
 #include <RF24Network.h>
 #include <RF24.h>
 #include <SPI.h>
-#include <DHT.h>;
+#include <DHT.h>
+#include <Wire.h>
+
 
 #define DHTPIN 4 
 
@@ -30,6 +32,7 @@ struct payload_t {                  // Structure of our payload
   unsigned int t;
   unsigned int h;
   unsigned int n;
+  unsigned long e;
 };
 
 struct payload_p {                  // Structure of our payload
@@ -37,9 +40,12 @@ struct payload_p {                  // Structure of our payload
   unsigned long aac;
 };
 
+
+
 void setup(void)
 {
   Serial.begin(57600);
+  Wire.begin(); // join i2c bus (address optional for master)
   Serial.println("Transmitter");
  
   SPI.begin();
@@ -49,9 +55,12 @@ void setup(void)
   radio.enableDynamicPayloads();
   radio.setRetries (500, 3);
   radio.setAutoAck(true);
+  
   radio.begin();
   network.begin(/*channel*/ 108, /*node address*/ this_node);
   dht.begin();
+
+  
 }
 
 void smartDelay(long milliseconds)
@@ -61,6 +70,8 @@ void smartDelay(long milliseconds)
     while ((millis() - sDelay) < milliseconds)
     {}
 }
+
+
 
 void loop() {
   loopStartMillis = millis();
@@ -106,11 +117,14 @@ void sendTemp()
     float t0 = dht.readTemperature() * 100;
     
     int h = (int) h0;
+    Serial.println(h0);
     int t = (int) t0;
+    Serial.println(t0);
     int n = (int)this_node;
     
+    
     Serial.print("Sending...");
-    payload_t payload = { h, t, n };
+    payload_t payload = { h, t, n, myCurrentEpoch };
     RF24NetworkHeader header(/*to node*/ other_node);
     bool ok = network.write(header,&payload,sizeof(payload));
     if (ok) {
@@ -119,9 +133,21 @@ void sendTemp()
       Serial.println(myCurrentEpoch);
     }
     else
+    {
       Serial.println("failed.");
-  
+      //writeSD(String(h)+";"+String(t)+";"+String(n)+";"+(String)myCurrentEpoch);
+    }
+
+    Wire.beginTransmission(2); // transmit to device #8
+      String MessageToSend = String(n)+";"+String(h)+";"+String(t)+";"+(String)myCurrentEpoch;
+      Wire.write(MessageToSend.c_str());        
+      Wire.endTransmission();    // stop transmitting
 }
+
+
+
+
+
 
 
 

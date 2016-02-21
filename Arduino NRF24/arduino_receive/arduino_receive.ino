@@ -18,6 +18,7 @@ struct payload_t {                 // Structure of our payload
   unsigned int h;
   unsigned int t;
   unsigned int n;
+  unsigned long e;
 };
 
 struct payload_p {                  // Structure of our payload
@@ -93,7 +94,7 @@ void loop(void){
     int sNode;
     float h0;
     float t0;
-
+    long e0;
   while ( network.available() ) {     // Is there anything ready for us?
 
     RF24NetworkHeader header;        // If so, grab it and print it out
@@ -102,9 +103,11 @@ void loop(void){
     
     sNode = payload.n;
     
-    h0 = payload.h / 100;
+    h0 = payload.h / 100.00;
     
-    t0 = payload.t / 100;
+    t0 = payload.t / 100.00;
+
+    e0 = payload.e;
 
     Serial.print("ND;");
     Serial.print(sNode);
@@ -113,8 +116,10 @@ void loop(void){
     Serial.print(h0);
     Serial.print(";");
     Serial.print("TP;");
-    Serial.println(t0);
-
+    Serial.print(t0);
+    Serial.print(";");
+    Serial.print("EP;");
+    Serial.println(e0);
     
   }
   

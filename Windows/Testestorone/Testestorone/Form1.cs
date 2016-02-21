@@ -15,6 +15,14 @@ namespace Testestorone
 {
     public partial class Form1 : Form
     {
+        const int timeOffset = 3;
+
+        public DateTime FromUnixTime(long unixTime)
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return epoch.AddSeconds(unixTime);
+        }
+
         public void refSensors()
         {
 
@@ -144,6 +152,7 @@ namespace Testestorone
             string Success = string.Empty;
             string Humidity = string.Empty;
             string Temperature = string.Empty;
+            DateTime Epoch;
 
             if (RxString.Contains("RQ"))
             {
@@ -179,7 +188,19 @@ namespace Testestorone
                 RequestedNode = RxString.Split(';')[1];
                 Humidity = RxString.Split(';')[3];
                 Temperature = RxString.Split(';')[5];
-
+                try
+                {
+                    Epoch = FromUnixTime(Convert.ToInt32(RxString.Split(';')[7]));
+                    richTextBox1.AppendText("Node-> " + RequestedNode + " Epoch converted: " + Epoch.ToString() +
+                        " Our local time: " + FromUnixTime((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds + 7200)  +  Environment.NewLine);
+                    richTextBox1.AppendText("Time difference in seconds: " + (((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds + 7200) - (Convert.ToInt32(RxString.Split(';')[7]))).ToString() + Environment.NewLine);
+                    if (LastSentEpochTime > 1400000000)
+                    richTextBox1.AppendText("Sync last sent (seconds ago): " + (((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds + 7200) - LastSentEpochTime).ToString() + Environment.NewLine);
+                }
+                catch (Exception ex)
+                {
+                    
+                }
 
 
                 
@@ -247,6 +268,20 @@ namespace Testestorone
         }
 
         public static string SetName { get; set; }
+
+        public Int32 LastSentEpochTime;
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (connected)
+            {
+                Int32 unixtime = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds + 7200;
+                LastSentEpochTime = unixtime;
+
+                serialPort1.Write(unixtime + "&");
+                richTextBox1.AppendText("Time sync to nodes: " + unixtime + Environment.NewLine);
+            }
+        }
 
     }
 }
