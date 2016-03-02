@@ -41,6 +41,14 @@ function getLatestData($deviceId)
 	return $data;
 }
 
+function deleteData($deviceId, $startTime, $endTime)
+{
+	$db = connect();
+	$db->query("DELETE FROM Data WHERE deviceId = '".$deviceId."' AND measureTime > " . $startTime ." AND measureTime < " . $endTime);
+	$db->close();
+	return $data;
+}
+
 function getDevices()
 {
 	$rows = array();

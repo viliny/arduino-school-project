@@ -111,6 +111,10 @@ var lidSwitchTrshlTime;
 				data: {mode: 'updateDevice', id: id},
 				dataType: 'json',
 				success: function(data){
+					if(!data)
+					{
+						$(boxContent).html("<table style='width: 100%;' class='dataTable'><tr style='width: 100%;' class='punainen' ><td style='width: 100%;'>Laitteella ei ole dataa</td></tr></table>");
+					}else{
 					var time = new Date(data.measureTime * 1000);
 					var h = time.getHours();
 					var m = time.getMinutes();
@@ -147,7 +151,7 @@ var lidSwitchTrshlTime;
 					output += "<tr><td class='right'>Klo:</td><td>"+formattedTime+"</td></tr>";
 					output += "</table>";
 					$(boxContent).html(output);
-										
+					}				
 					}	//successin päättävä
 			});	//ajaxin päättävä
 		}//ifin päättävä	
@@ -206,8 +210,9 @@ deleteDevice = function(deviceName, deviceId, e)
 					$(this).dialog("close");
 					$(box).fadeOut('slow', function(){
 					$(box).remove();
-		});
+			});
 			
+				$("#deviceSelect option[value='" + deviceId + "']").remove();
 				},
 				'Peruuta': function() {
 					$(this).dialog("close");
@@ -262,44 +267,122 @@ $(function() {
 
 $('#chartSubmit').click(function(){
 	var deviceId = $("#deviceSelect").val();
+	var deviceName = $("#deviceSelect option:selected").text();
 	var startTime = $( "#startTime" ).val();
 	var endTime = $("#endTime").val();
 	var humidityPoints = [];
 	var tempPoints = [];
+	
+	if(startTime == "" || endTime == "" || deviceId == "")
+	{
+		$('#noData-message').html("<p>Valitse laite ja aikaväli!</p>");
+		$('#noData-message').dialog({
+			modal: true,
+			buttons: {
+				'Ok': function() {
+					$(this).dialog("close");
+				}
+			}		
+		});
+
+	}else{
 		$.ajax({
 				method: 'POST',
 				url: "ajax.php",
 				dataType: "json",
 				data: {mode: 'getChart', deviceId: deviceId,startTime: startTime,endTime: endTime},
 				success: function(data){
-					var chart = new CanvasJS.Chart("chartContainer",
+					
+					if(data.length == 0)
+					{
+						$('#noData-message').html("<p>Laitteessa \"" + deviceName + "\" ei ole dataa valitsemallasi aikavälillä</p>");
+						$('#noData-message').dialog({
+							modal: true,
+							buttons: {
+								'Ok': function() {
+									$(this).dialog("close");
+								}
+							}		
+						});
+						$('#chartContainer').fadeOut('slow');
+						$('#exportToCsv').fadeOut('slow');
+					}else{
+						
+						$('#chartContainer').fadeIn('slow');
+						$('#exportToCsv').fadeIn('slow');
+						var chart = new CanvasJS.Chart("chartContainer",
 						{
+							zoomEnabled: true,
+							backgroundColor: "rgba(255,255,255,0.9)",
+							
+							axisX: {
+								labelFontSize: 13,
+								labelAngle: 45
+							},
 							title:{
-									text: "Multi-Series Line Chart"  
+									text: deviceName + ":n tilastot"  
 									},
 							data: [
-								{        
+								{    
+									showInLegend: true,    
+									legendText: "Kosteus %",
 									type: "line",
 									dataPoints: []
 								},
-								{        
+								{    
+									showInLegend: true,   
+									legendText: "Lämpötila °C", 
 									type: "line",
 									dataPoints: []
 								}
 							]
 						});
+						
 					$(data).each(function(){
-						humidityPoints.push({ label: this.measureTime, y: this.humidity });
-						tempPoints.push({ label: this.measureTime, y: this.temp });
+						var date = new Date( this.measureTime * 1000);
+						var min = date.getMinutes();
+						min = leadingZeros(min);
+						var h = date.getHours();
+						h= leadingZeros(h);
+						var d = date.getDate();
+						var month = date.getMonth();
+						var year = date.getFullYear();
+						humidityPoints.push({ label: d +"." + month + ". - " + h + ":" + min, y: this.humidity});
+						tempPoints.push({ label: d +"." + month + ". - " + h + ":" + min, y: this.temp });
 					});
 					
-					
-					chart.options.data[0].dataPoints = humidityPoints;
-					chart.options.data[1].dataPoints = tempPoints;
-					chart.render();
-					$('#chartContainer').fadeIn('slow');
+						chart.options.data[0].dataPoints = humidityPoints;
+						chart.options.data[1].dataPoints = tempPoints;
+						chart.render();
+					}
 				}
 			});	//ajaxin päättävä
+		}
 });
+
+
+exportToCsv = function(){
+	
+	var deviceId = $("#deviceSelect").val();
+	var startTime = $( "#startTime" ).val();
+	var endTime = $("#endTime").val();
+	var deviceName = $("#deviceSelect option:selected").text();
+
+		$('#exportToCsv-message').html("<p>Tietojen vieminen .csv:ksi poistaa laitteen \"" + deviceName + "\" tiedot järjestelmästä</p>");
+		$('#exportToCsv-message').dialog({
+		modal: true,
+			buttons: {
+				'Vie': function() {
+					
+					 window.location.href = 'export.php?deviceId=' + deviceId + "&startTime=" +startTime + "&endTime=" +endTime;
+					$(this).dialog("close");
+
+				},
+				'Peruuta': function() {
+					$(this).dialog("close");
+				}		
+		}
+	});
+}
 
 }); //document readyn päättävä
