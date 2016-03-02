@@ -30,10 +30,15 @@ switch($_REQUEST['mode']) {
 		setSettings($_REQUEST['email'],$_REQUEST['name'],$_REQUEST['humidityTrshld'],$_REQUEST['tempTrshld'],$_REQUEST['lidSwitchTrshldTime']);
 	break;
 	case "getChart":
-		$test = array(
-			"test" => "MOI"
-		);
-		$output = json_encode($test);
+		
+		$startTime = $_REQUEST['startTime'];
+		$endTime = $_REQUEST['endTime'];
+		$startTime = strtotime($startTime);
+		$endTime = strtotime($endTime);
+		$deviceId = $_REQUEST['deviceId'];
+		
+		$output = getData($deviceId,$startTime,$endTime);
+		$output = json_encode($output);
 		echo($output);
 	break;
 }

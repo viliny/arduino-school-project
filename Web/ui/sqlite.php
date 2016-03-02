@@ -52,11 +52,11 @@ function getDevices()
 	return $rows;
 }
 
-function getAllData()
+function getData($deviceId, $startTime, $endTime)
 {
 	$rows = array();
 	$db = connect();
-	$results = $db->query("SELECT * FROM Data");
+	$results = $db->query("SELECT * FROM Data WHERE deviceId = '".$deviceId."' AND measureTime > ".$startTime." AND measureTime < " . $endTime);
 	while($row = $results->fetchArray(SQLITE3_ASSOC))
 	{
 		array_push($rows, $row);

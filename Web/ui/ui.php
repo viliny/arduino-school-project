@@ -33,7 +33,7 @@
 									</select></td><td><input type='text' id='startTime' value="Aloituspäivä"></td><td>-</td><td><input type='text' id='endTime' value="Lopetuspäivä"></td></tr>
 									<tr><td colspan='4'><button id='chartSubmit' style="text-align: center">Luo Taulukko</button></td></tr>
 						</table>
-						 <div id="chartContainer" style="height: 500px; width: 50%;"></div>
+						 <div id="chartContainer"></div>
 					</div>
 					<div class='views' style='display: none' id='setupView'>
 						<h1>Asetukset</h1>

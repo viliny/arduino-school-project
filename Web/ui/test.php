@@ -3,22 +3,14 @@ include 'sqlite.php';
 
 $db = connect();
 
+$deviceId = "1";
+$startTime = 1455746400;
+$endTime = 1455919200;
 
+$data = getData($deviceId, $startTime, $endTime);
 
-for($i = 1; $i<5; $i++)
-{
-	$measure = time() - 7200;
-	
-	for($j = 0; $j<100; $j++)
-	{
-		$measure += (60 * 5);
-		$humidity = rand(75, 85);
-		$temp = rand(19, 23);
-		$result = $db->query("INSERT INTO Data VALUES('".$i."','".$humidity."','". $temp ."','0','0','verkkovirta','" . $measure . "');");
-		echo("DEBU|| Laite: ". $i .", Rivi: " .$j. ", Kosteus: " . $humidity . ", Lämpötila: " . $temp . ", aikaleima: " . $measure . "\n");
-	}
-}
-
+$data = json_encode($data);
+var_dump($data);
 $db->close();
 
 ?>

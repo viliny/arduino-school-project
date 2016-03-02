@@ -81,7 +81,7 @@ var lidSwitchTrshlTime;
 						);
 					}
 					updateDevice();
-					$('#deviceSelect').append("<option val='" + this.deviceId + "'>" + this.deviceName + "</option>");
+					$('#deviceSelect').append("<option value='" + this.deviceId + "'>" + this.deviceName + "</option>");
 					
 				});
 				$('#mainView').append(
@@ -264,14 +264,40 @@ $('#chartSubmit').click(function(){
 	var deviceId = $("#deviceSelect").val();
 	var startTime = $( "#startTime" ).val();
 	var endTime = $("#endTime").val();
-	
+	var humidityPoints = [];
+	var tempPoints = [];
 		$.ajax({
 				method: 'POST',
 				url: "ajax.php",
 				dataType: "json",
 				data: {mode: 'getChart', deviceId: deviceId,startTime: startTime,endTime: endTime},
 				success: function(data){
-					alert(data.test);
+					var chart = new CanvasJS.Chart("chartContainer",
+						{
+							title:{
+									text: "Multi-Series Line Chart"  
+									},
+							data: [
+								{        
+									type: "line",
+									dataPoints: []
+								},
+								{        
+									type: "line",
+									dataPoints: []
+								}
+							]
+						});
+					$(data).each(function(){
+						humidityPoints.push({ label: this.measureTime, y: this.humidity });
+						tempPoints.push({ label: this.measureTime, y: this.temp });
+					});
+					
+					
+					chart.options.data[0].dataPoints = humidityPoints;
+					chart.options.data[1].dataPoints = tempPoints;
+					chart.render();
+					$('#chartContainer').fadeIn('slow');
 				}
 			});	//ajaxin päättävä
 });
