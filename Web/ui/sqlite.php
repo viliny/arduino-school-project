@@ -30,6 +30,7 @@ function deleteDevice($deviceId)
 {
 	$db = connect();
 	$db->query("DELETE FROM Device WHERE deviceId = '".$deviceId."'");
+	$db->query("DELETE FROM Data WHERE deviceId = '".$deviceId."'");
 	$db->close();
 }
 

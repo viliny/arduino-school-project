@@ -125,6 +125,16 @@ var lidSwitchTrshlTime;
 					else
 						var kansi = 'kiinni';
 						
+					if(data.batteryStatus > 100)
+					{
+						var battery = 'Lataa';
+						var batLine = "<tr><td class='right'>Virtalähde:</td><td>"+battery+"</td></tr>";
+					}else
+					{
+						var battery = data.batteryStatus + " %";
+						var batLine = "<tr class='punainen'><td class='right'>Virtalähde:</td><td>"+battery+"</td></tr>";
+					}
+						
 					if(data.waterLevelLow > 0)
 						var vesi = 'matala!';
 					else
@@ -139,7 +149,7 @@ var lidSwitchTrshlTime;
 						output += "<tr><td class='right'>Lämpötila:</td><td>"+data.temp+" °C</td></tr>";
 					else
 						output += "<tr class='punainen'><td class='right'>Lämpötila:</td><td>"+data.temp+" °C</td></tr>";
-					output += "<tr><td class='right'>Virtalähde:</td><td>"+data.batteryStatus+"</td></tr>";
+						output += batLine;
 					if(kansi == "kiinni")
 						output += "<tr><td class='right'>Kansi:</td><td>"+kansi+"</td></tr>";
 					else
