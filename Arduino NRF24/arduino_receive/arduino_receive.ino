@@ -64,7 +64,7 @@ void setup(void)
   Serial.println("Receiver");
  
   SPI.begin();
-  radio.setPALevel(RF24_PA_HIGH);
+  radio.setPALevel(RF24_PA_LOW);
   radio.setDataRate(RF24_2MBPS);
   radio.setCRCLength(RF24_CRC_16);
   radio.enableDynamicPayloads();

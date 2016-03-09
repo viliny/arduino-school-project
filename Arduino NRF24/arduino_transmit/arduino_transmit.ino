@@ -10,6 +10,8 @@
 
 #define DHTTYPE DHT22
 
+#define lidPin A1
+
 DHT dht(DHTPIN, DHTTYPE);
 
 RF24 radio(7,8);                    // nRF24L01(+) radio attached using Getting Started board 
@@ -52,16 +54,24 @@ struct payload_p {                  // Structure of our payload
   unsigned long aac;
 };
 
+const int voltPin = 0;
+
+const int ledPin = 2;
 
 
 void setup(void)
 {
+  
   Serial.begin(57600);
   Wire.begin(); // join i2c bus (address optional for master)
   Serial.println("Transmitter");
- 
+
+  pinMode(ledPin, OUTPUT);
+   
+  digitalWrite(ledPin, HIGH);
+  
   SPI.begin();
-  radio.setPALevel(RF24_PA_HIGH);
+  radio.setPALevel(RF24_PA_LOW);
   radio.setDataRate(RF24_2MBPS);
   radio.setCRCLength(RF24_CRC_16);
   radio.enableDynamicPayloads();
@@ -87,6 +97,18 @@ void smartDelay(long milliseconds)
 
 void loop() {
   loopStartMillis = millis();
+
+  int lStatus = analogRead(lidPin);
+
+  if (lStatus > 1000)
+  {
+    digitalWrite(ledPin, LOW);
+    Serial.println("Lid open!");
+  }
+  else
+  {
+    digitalWrite(ledPin, HIGH);
+  }
   
   network.update();                          // Check the network regularly
 
@@ -116,7 +138,7 @@ void loop() {
     }
   }
 
-  smartDelay(1000);
+  smartDelay(1500);
   myCurrentEpoch += ((millis() - loopStartMillis) / 1000);
 
 }
@@ -134,9 +156,28 @@ void sendTemp()
     Serial.println(t0);
     int n = (int)this_node;
     
+
+    float voltage;
+  //Obtain RAW voltage data
+  voltage = analogRead(voltPin);
+  //Convert to actual voltage (0 - 5 Vdc)
+  voltage = (voltage / 1024) * 5.0;
+  //Convert to voltage before divider
+  //  Divide by divider = multiply
+  //  Divide by 1/5 = multiply by 5
+  Serial.print("Voltage: ");
+  Serial.println(voltage);  //Output to serial
+  voltage = (voltage / 4.2) * 100; 
+  Serial.print("Voltage %: ");
+  Serial.println(voltage);
+
+  int lidState = digitalRead(lidPin);
+
+    Serial.print("lid: ");
+  Serial.println(lidState);
     
     Serial.print("Sending...");
-    payload_t payload = { h, t, n, myCurrentEpoch, 0, 0, 87 };
+    payload_t payload = { h, t, n, myCurrentEpoch, lidState, 0, voltage };
     RF24NetworkHeader header(/*to node*/ other_node);
     bool ok = network.write(header,&payload,sizeof(payload));
     if (ok) {
