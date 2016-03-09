@@ -28,11 +28,23 @@ unsigned long myCurrentEpoch;
 unsigned long loopStartMillis;
 unsigned long loopEndMillis;
 
-struct payload_t {                  // Structure of our payload
-  unsigned int t;
+struct payload_t {                 // Structure of our payload
+  //Humidity
   unsigned int h;
+  //Temperature
+  unsigned int t;
+  //Node id
   unsigned int n;
+  //Epoch
   unsigned long e;
+  // Lid status
+  unsigned int l;
+  //Water level
+  unsigned int w;
+  //Charging status
+  unsigned int b;
+  //Charge level
+  unsigned int bl;
 };
 
 struct payload_p {                  // Structure of our payload
@@ -124,7 +136,7 @@ void sendTemp()
     
     
     Serial.print("Sending...");
-    payload_t payload = { h, t, n, myCurrentEpoch };
+    payload_t payload = { h, t, n, myCurrentEpoch, 0, 0, 87 };
     RF24NetworkHeader header(/*to node*/ other_node);
     bool ok = network.write(header,&payload,sizeof(payload));
     if (ok) {
@@ -139,7 +151,7 @@ void sendTemp()
     }
 
     Wire.beginTransmission(2); // transmit to device #8
-      String MessageToSend = String(n)+";"+String(h)+";"+String(t)+";"+(String)myCurrentEpoch;
+      String MessageToSend = String(n)+";"+String(h)+";"+String(t)+";"+(String)myCurrentEpoch+";"+String(0)+";"+String(0)+";"+String(87);
       Wire.write(MessageToSend.c_str());        
       Wire.endTransmission();    // stop transmitting
 }

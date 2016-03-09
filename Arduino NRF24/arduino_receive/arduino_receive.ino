@@ -15,10 +15,22 @@ unsigned long last_sent;             // When did we last send?
 unsigned long last_sync;
 
 struct payload_t {                 // Structure of our payload
+  //Humidity
   unsigned int h;
+  //Temperature
   unsigned int t;
+  //Node id
   unsigned int n;
+  //Epoch
   unsigned long e;
+  // Lid status
+  unsigned int l;
+  //Water level
+  unsigned int w;
+  //Charging status
+  unsigned int b;
+  //Charge level
+  unsigned int bl;
 };
 
 struct payload_p {                  // Structure of our payload
@@ -95,6 +107,10 @@ void loop(void){
     float h0;
     float t0;
     long e0;
+    int l0;
+    int w0;
+    int b0;
+    int bl0;
   while ( network.available() ) {     // Is there anything ready for us?
 
     RF24NetworkHeader header;        // If so, grab it and print it out
@@ -109,6 +125,14 @@ void loop(void){
 
     e0 = payload.e;
 
+    l0 = payload.l;
+
+    w0 = payload.w;
+
+    b0 = payload.b;
+
+    bl0 = payload.bl;
+
     Serial.print("ND;");
     Serial.print(sNode);
     Serial.print(";");
@@ -119,7 +143,21 @@ void loop(void){
     Serial.print(t0);
     Serial.print(";");
     Serial.print("EP;");
-    Serial.println(e0);
+    Serial.print(e0);
+    Serial.print(";");
+    Serial.print("LS;");
+    Serial.print(l0);
+    Serial.print(";");
+    Serial.print("WL;");
+    Serial.print(w0);
+    Serial.print(";");
+    Serial.print("BC;");
+    Serial.print(b0);
+    Serial.print(";");
+    Serial.print("BL;");
+    Serial.println(bl0);
+
+    
     
   }
   
