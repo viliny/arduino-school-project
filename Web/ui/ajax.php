@@ -41,6 +41,17 @@ switch($_REQUEST['mode']) {
 		$output = json_encode($output);
 		echo($output);
 	break;
+	case "getLog":
+		$startTime = $_REQUEST['startTime'];
+		$endTime = $_REQUEST['endTime'];
+		$startTime = strtotime($startTime);
+		$endTime = strtotime($endTime);
+		$deviceId = $_REQUEST['deviceId'];
+		
+		$output = getLog($deviceId,$startTime,$endTime);
+		$output = json_encode($output);
+		echo($output);
+	break;
 }
 
 ?>

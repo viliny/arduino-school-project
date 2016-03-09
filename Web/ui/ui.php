@@ -36,7 +36,7 @@
 									<tr><td colspan='4'><button id='chartSubmit' style="text-align: center">Luo Taulukko</button></td></tr>
 						</table>
 						 <div style='display: none;' id="chartContainer"></div><button id="exportToCsv" style="display: none" onClick="exportToCsv()">Export to .csv</button>
-						 
+						 <table id='log'></table>
 					</div>
 					<div class='views' style='display: none' id='setupView'>
 						<h1>Asetukset</h1>
