@@ -2,12 +2,15 @@
 
 $(document).ready(function(){
 	
-var menuselected = $('.selected');
-var email;
-var name;
-var humidityTrshld;
-var tempTrshld;
-var lidSwitchTrshlTime;
+var menuselected = $('.selected'); //defines the selected view
+var email; //users email address where to send the alert mails
+var name;	//users name
+var humidityTrshld;		//Humidity treshold for alerts
+var tempTrshld;	//Temperature treshold for alerts
+var lidSwitchTrshlTime; //How long the lid must be open to send an alert
+var orderBy = "timeStamp"; //for logs, to order by what column
+var isAsc = "ASC"; //is the order ascending or descending
+var filters = []; //to filter out f.e. devices or alert types from logs
 
 	$('li').click(function(){
 		$(menuselected).attr('class','');
@@ -19,6 +22,7 @@ var lidSwitchTrshlTime;
 			$('#mainView').fadeIn('fast');
 			$('#dataView').fadeOut('fast');
 			$('#setupView').fadeOut('fast');
+			$('#logView').fadeOut('fast');
 		}
 		
 		if($(menuselected).text() == 'Tilastot')
@@ -26,6 +30,7 @@ var lidSwitchTrshlTime;
 			$('#mainView').fadeOut('fast');
 			$('#dataView').fadeIn('fast');
 			$('#setupView').fadeOut('fast');
+			$('#logView').fadeOut('fast');
 		}
 		
 		if($(menuselected).text() == 'Asetukset')
@@ -33,6 +38,15 @@ var lidSwitchTrshlTime;
 			$('#mainView').fadeOut('fast');
 			$('#dataView').fadeOut('fast');
 			$('#setupView').fadeIn('fast');
+			$('#logView').fadeOut('fast');
+		}
+		
+		if($(menuselected).text() == 'Logi')
+		{
+			$('#mainView').fadeOut('fast');
+			$('#dataView').fadeOut('fast');
+			$('#setupView').fadeOut('fast');
+			$('#logView').fadeIn('fast');
 		}
 	});
 	
@@ -69,7 +83,7 @@ var lidSwitchTrshlTime;
 				$('#mainView').html("<div id='addNew-message' style='display: none' title='Lisää uusi laite'><table id='addNewTable'><tr><td>ID:</td><td><input type='text' id='newIdField'></td></tr><tr><td>Nimi:</td><td><input type='text' id='newNameField'></td></tr></table></div><h1 class='mainViewHeader'>Päänäkymä</h1>");
 				$('#mainView').append("<div id='deleteDialog' style='display: none' title='Poista laite'></div>");
 				$(data).each(function(){
-					if(this.error == 1)
+					if(this.error > 0)
 					{
 						$('#mainView').append(						
 							"<div class='box'><div class='boxHeader alert'>" + this.deviceName + "<div onclick=\"deleteDevice('" + this.deviceName + "','" + this.deviceId +"',this)\" class='delete'>X</div></div><div class='boxContent' id='" + this.deviceId +"'></div></div>"
@@ -260,11 +274,6 @@ $('#settingsSubmit').click(function(){
 			});	//ajaxin päättävä
 });
 
-load();
-
-setInterval(function(){updateDevice();},10000);
-
-
 $(function() {
 	$( "#startTime" ).datepicker();
     $( "#startTime" ).datepicker( "option", "dateFormat", "d.m.yy" );
@@ -394,5 +403,76 @@ exportToCsv = function(){
 		}
 	});
 }
+
+
+	updateLog = function()
+	{
+		$.ajax({
+			url: 'ajax.php',
+			method: 'post',
+			dataType: "json",
+			data: {
+				mode: "updateLog",
+				orderBy: orderBy,
+				isAsc: isAsc,
+				filters: filters
+			},//datan päättävä
+			success: function(data){
+				var html;
+				$(data).each(function(){
+					html += "<tr>";
+					html += 	"<td>" + this.deviceName + "</td>";
+					html +=		"<td>" + this.type + "</td>";
+					html +=		"<td>" + this.msg + "</td>";
+					html +=		"<td>" + this.timeStamp + "</td>";
+					html +=	"<tr>";
+				});//eachin päättävä
+				$("#logTable").html("<tr><th onClick='headerClick(this)'>Laite</th><th onClick='headerClick(this)'>Tyyppi</th><th onClick='headerClick(this)'>Viesti</th><th onClick='headerClick(this)'>Aika</th></tr>");
+				$("#logTable").append(html);
+			},
+			error: function(request, error){
+				alert("ERROR: " + error);
+				console.debug(request);
+			}
+		});//ajaxin päättävä
+		
+		
+	}
+
+headerClick = function(e){
+	var text = $(e).text();
+	switch(text) {
+		case "Laite":
+			orderBy = "deviceName";
+		break;
+		case "Tyyppi":
+			orderBy = "type";
+		break;
+		case "Viesti":
+			orderBy = "msg";
+		break;
+		case "Aika":
+			orderBy = "timeStamp";
+		break;
+	}
+	
+	if(isAsc == "ASC")
+	{
+		isAsc = "DESC";
+	}else{
+		isAsc = "ASC";
+	}
+	
+	updateLog();
+};
+
+load();
+updateLog();
+
+
+setInterval(function(){
+	updateDevice();
+	updateLog();
+	},10000);
 
 }); //document readyn päättävä

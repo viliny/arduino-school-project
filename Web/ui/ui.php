@@ -21,6 +21,7 @@
 						<li style="background-image: url('images/Päänäkymä.png');" class='selected' >Päänäkymä</li>
 						<li style="background-image: url('images/Tilastot.png');" >Tilastot</li>
 						<li style="background-image: url('images/Asetukset.png');" >Asetukset</li>
+						<li style="background-image: url('#');" >Logi</li>
 					</ul>
 				</div>
 				<div id='mainContent'>
@@ -61,6 +62,16 @@
 							</tr>
 							<tr>
 								<td colspan='2'><button id='settingsSubmit'>Päivitä Asetukset</button></td>
+							</tr>
+						</table>
+					</div>
+					<div class='views' style='display: none' id='logView'>
+						<table id='logTable'>
+							<tr>
+								<th class='tableHeader'>Laite</th>
+								<th class='tableHeader'>Tyyppi</th>
+								<th class='tableHeader'>Viesti</th>
+								<th class='tableHeader'>Aika</th>
 							</tr>
 						</table>
 					</div>
