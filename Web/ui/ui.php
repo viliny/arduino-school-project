@@ -18,9 +18,9 @@
 			<div id='content'>
 				<div id='menuContainer'>
 					<ul id='menu'>
-						<li class='selected' >Päänäkymä</li>
-						<li>Tilastot</li>
-						<li>Asetukset</li>
+						<li style="background-image: url('images/Päänäkymä.png');" class='selected' >Päänäkymä</li>
+						<li style="background-image: url('images/Tilastot.png');" >Tilastot</li>
+						<li style="background-image: url('images/Asetukset.png');" >Asetukset</li>
 					</ul>
 				</div>
 				<div id='mainContent'>
