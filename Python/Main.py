@@ -38,27 +38,35 @@ def main(pathDB):
 
 	print str(len(devices)) + " devices found."
 
-## Iterate through all devices
 	totalErrors = 0
 	log = ""
 	sendEmail = False
+	timeNow = time.time()
+
+	#	fetch time of last sent email
+	cur.execute("SELECT mailSent FROM Log ORDER BY mailSent DESC")
+	timeEmailSent = cur.fetchone()[0]
+
+## Iterate through all devices
 	for device in devices:
 		print "Device: {0}\tName: {2}\tUpdated: {1}\tErr:{3}".format(*device)
-		#if Alert.CheckDeviceValues(device[0], conn) > 0:  # AND EMAIL HAVEN'T BEEN SENT IN PAST HOUR
+		#	Check latest values from db
+		#if Alert.CheckDeviceValues(device[0], conn) > 0:
 		if True:
-			log += "Log records for device \'{0}\':\n".format(device[2])
-			log += ReadLog.GetLogOfDevice(conn, device[2], 10) + "\n"
-			totalErrors += 1
-		#	If there has been an issue with this device more than an hour -> send an email
-			if device[3]+3600 < time.time():
-				sendEmail = True
+			# If time from the last email is >1h and device error has been >1h
+			if timeEmailSent+3600 < timeNow and device[3]+3600 < timeNow:
+				log += "Log records for the device \'{0}\':\n".format(device[2])
+				log += ReadLog.GetLogOfDevice(conn, device[2], 10) + "\n"
+				ReadLog.MarkSent(conn, device[2]);
+				totalErrors += 1
+				sendEmail = True # An email will be sent
 
-##	Check if any errors occured and send email
-	if totalErrors > 0 and sendEmail:
+##	Check if any errors occured and send an email
+	if sendEmail:
 		#	Generate message
 		message = "{0} device(s) has issues!\n".format(totalErrors)
 		message += log;
-		#	Send email to address defined in settings table
+		#	Send an email to the address defined in settings table
 		print "Send email:"
 		print message
 	conn.close()

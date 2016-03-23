@@ -10,6 +10,7 @@ import sys
 import time
 import sqlite3
 
+#	returns log for the given device
 def GetLogOfDevice(conn, deviceName, limit):
 	cur = conn.cursor()
 
@@ -22,10 +23,14 @@ def GetLogOfDevice(conn, deviceName, limit):
 		timestr = time.strftime(timeformat, time.localtime(row[4]))
 		log += "{0}: {1}: {2}\t{3}\n".format(timestr, row[0], row[2], row[1])
 
-	cur.execute("UPDATE Log SET mailSent=? WHERE mailSent=0", [int(time.time())])
+	return log
+
+#	Set mailsent to current time for a specific device
+def MarkSent(conn, deviceName):
+	cur = conn.cursor()
+	cur.execute("UPDATE Log SET mailSent=? WHERE mailSent=0 AND deviceName=?", [int(time.time()), deviceName])
 	conn.commit()
 
-	return log
 
 if __name__ == "__main__":
 	if len(sys.argv) == 3:
