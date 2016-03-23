@@ -2,28 +2,17 @@
 import sys
 import serial
 import ParseStatus
-# import time
-# import signal
-# from time import gmtime, strftime
+import time
 
-# def signal_handler(signum, frame):
-#     raise Exception("Timed out!")
-
-# signal.signal(signal.SIGALRM, signal_handler)
-# signal.alarm(20)
 
 # port = '/dev/ttyUSB0'
 # port = 'COM5'
 # speed = 57600
 
 def ReadStatus(port, speed, pathdb):
-    # epoch = str(int(time.time()))
-    # dataout = epoch
-
     try:
-        ser = serial.Serial(port, speed)
+        ser = serial.Serial(port, speed, parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
         print("Connecting to", port + " at speed:", str(speed) + "...")
-
     except:
       print("Could not connect ", port)
       sys.exit()
@@ -32,12 +21,28 @@ def ReadStatus(port, speed, pathdb):
         print("Could not open serial")
         sys.exit()
 
-    while 1:
-    	datain = ser.readline()
-    	datain = datain.decode().replace('\n', '').replace('\r', '')
-    	print(datain)
-    	if not pathdb == "":
-    	   ParseStatus.Parse(pathdb, datain)
+    ser.flushInput()
+
+    time.sleep(2)
+    print("Sending epoch to master node: ", epoch)
+    epoch = str(int(time.time()))
+    ser.write(bytes(epoch,'UTF-8'))
+    time.sleep(2)
+    print ("Fetching data...")
+    time.sleep(1)
+
+    try:
+        while True:
+        	datain = ser.readline()
+        	datain = datain.decode().replace('\n', '').replace('\r', '')
+        	print("Received: ", datain)
+        	if datain.startswith("ND") and not pathdb == "":
+        	   ParseStatus.Parse(pathdb, datain)
+    except KeyboardInterrupt:
+        ser.close()
+        print()
+        print ("Closing serial")
+        sys.exit()
 
 
 if __name__ == "__main__":
