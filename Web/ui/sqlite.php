@@ -12,7 +12,7 @@ function connect()
 		$db = new sqlite3('monitor.db');
 		$db->busyTimeOut(10000);
 		$db->query("CREATE TABLE Device(deviceId TEXT , lastUpdate NUMERAL , deviceName TEXT, error NUMERAL)");
-		$db->query("CREATE TABLE Log(type TEXT , msg TEXT , sender TEXT, mailSent NUMERAL, timeStamp NUMERAL)");
+		$db->query("CREATE TABLE Log(type TEXT , msg TEXT , deviceName TEXT, mailSent NUMERAL, timeStamp NUMERAL)");
 		$db->query("CREATE TABLE Data(deviceId TEXT , humidity NUMERAL , temp NUMERAL, lidSwitchOpen NUMERAL, waterLevelLow NUMERAL, batteryStatus TEXT, measureTime NUMERAL)");
 		$db->query("CREATE TABLE Settings(email TEXT UNIQUE, name TEXT, lang TEXT, humidityTrshld NUMERAL, tempTrshld NUMERAL, lidSwitchTrshldTime NUMERAL)");
 		return $db;
@@ -84,11 +84,16 @@ function getSettings()
 	return $data;
 }
 
-function getLog($deviceId, $startTime, $endTime)
+function updateLog($filters, $orderBy, $isAsc)
 {
 	$db = connect();
 	$rows = array();
-	$results = $db->query("SELECT * FROM Log WHERE deviceId = '".$deviceId."' AND timeStamp > ".$startTime." AND timeStamp < " . $endTime);
+	
+	if($filters == null)
+	{
+		$filters = "";
+	}
+	$results = $db->query("SELECT * FROM Log ORDER BY " . $orderBy . " " . $isAsc);
 	while($row = $results->fetchArray(SQLITE3_ASSOC))
 	{
 		array_push($rows, $row);

@@ -1,22 +1,14 @@
 <?php
-include 'sqlite.php';
+
+include "sqlite.php";
 
 $db = connect();
 
-$startTime = 1457075283;
-
-for($i = 1; $i<5; $i++)
-{
-	echo("kirjoitetaan laitteelle " . $i . "\n");
-	for($j = 0; $j<1000; $j++)
-	{
-		$db->query("INSERT INTO Data VALUES('".$i."' , " . rand(70,90) . " , " . rand(18,25) . "," . rand(0,1) . ", " . rand(0,1) . ", '" . rand(0,99) . "', " . $startTime . ")");
-		$db->query("INSERT INTO Log VALUES('INFO' , 'Data haettu onnistuneesti' , '".$i."', '0', ".$startTime.")");
-		$startTime += 60 * 5;
-		echo("Kirjoitettiin rivi: " . $j . "\n");
-	}
-}
-
+$db->query("INSERT INTO Log VALUES('erxcror' , 'testi' , 'testi1', 1, 5)");
+$db->query("INSERT INTO Log VALUES('error' , 'yhteyshäiriö' , 'testi1', 1, 6)");
+$db->query("INSERT INTO Log VALUES('alert' , 'homo' , 'testi1', 1, 4)");
+$db->query("INSERT INTO Log VALUES('errzxcor' , 'yhteyshäihomoriö' , 'testi1', 1, 2)");
+$db->query("INSERT INTO Log VALUES('errzxcor' , 'yhteyshäiriö' , 'testi1', 1, 3)");
+$db->query("INSERT INTO Log VALUES('error' , 'yhteysasdasdhäiriö' , 'testi1', 1, 1)");
 $db->close();
-
 ?>
