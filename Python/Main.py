@@ -16,7 +16,7 @@ import os
 import time
 
 import Database
-#import Alert
+import Alert
 import ReadLog
 ##########	MAIN	##
 def main(pathDB):
@@ -45,14 +45,17 @@ def main(pathDB):
 
 	#	fetch time of last sent email
 	cur.execute("SELECT mailSent FROM Log ORDER BY mailSent DESC")
-	timeEmailSent = cur.fetchone()[0]
+	timeEmailSent = cur.fetchone()
+	if timeEmailSent is None:
+		timeEmailSent = 0
+	else:
+		timeEmailSent = timeEmailSent[0]
 
 ## Iterate through all devices
 	for device in devices:
 		print "Device: {0}\tName: {2}\tUpdated: {1}\tErr:{3}".format(*device)
 		#	Check latest values from db
-		#if Alert.CheckDeviceValues(device[0], conn) > 0:
-		if True:
+		if Alert.CheckDeviceValues(conn, device[0]) > 0:
 			# If time from the last email is >1h and device error has been >1h
 			if timeEmailSent+3600 < timeNow and device[3]+3600 < timeNow:
 				log += "Log records for the device \'{0}\':\n".format(device[2])
