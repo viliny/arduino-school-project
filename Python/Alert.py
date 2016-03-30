@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os.path
@@ -61,7 +61,7 @@ def CheckDeviceValues(conn, devId):
 			msg+="Alhainen veden taso. "
 			errorCount += 1
 
-		# print msg+"\n"
+		# print(msg+"\n")
 		sender=devId
 		mailSent=0
 		if type=="error":
@@ -83,7 +83,7 @@ def CheckDeviceValues(conn, devId):
 if __name__ == "__main__":
 	if len(sys.argv) == 3:
 		conn = sqlite3.connect(sys.argv[1])
-		print str(CheckDeviceValues(conn, sys.argv[2]))
+		print(str(CheckDeviceValues(conn, sys.argv[2])))
 		conn.close()
 	else:
-		print "Usage: ./alert.py [path-to-db] [device-id]"
+		print("Usage: ./alert.py [path-to-db] [device-id]")

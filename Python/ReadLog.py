@@ -35,7 +35,7 @@ def MarkSent(conn, deviceName):
 if __name__ == "__main__":
 	if len(sys.argv) == 3:
 		conn = sqlite3.connect(sys.argv[1])
-		print str(GetLogOfDevice(conn, sys.argv[2], 10))
+		print(str(GetLogOfDevice(conn, sys.argv[2], 10)))
 		conn.close()
 	else:
-		print "Usage: ./ReadLog.py [path-to-db] [device-name]"
+		print("Usage: ./ReadLog.py [path-to-db] [device-name]")

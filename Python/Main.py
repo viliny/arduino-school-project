@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 Modules:
@@ -18,6 +18,7 @@ import time
 import Database
 import Alert
 import ReadLog
+import smtp;
 ##########	MAIN	##
 def main(pathDB):
 	countError = 0
@@ -33,10 +34,10 @@ def main(pathDB):
 
 	# if Device table is empty quit
 	if len(devices) == 0:
-		print "Devices table is empty!"
+		print("Devices table is empty!")
 		return 0
 
-	print str(len(devices)) + " devices found."
+	print("{0} devices found.".format(str(len(devices))) )
 
 	totalErrors = 0
 	log = ""
@@ -53,7 +54,7 @@ def main(pathDB):
 
 ## Iterate through all devices
 	for device in devices:
-		print "Device: {0}\tName: {2}\tUpdated: {1}\tErr:{3}".format(*device)
+		print("Device: {0}\tName: {2}\tUpdated: {1}\tErr:{3}".format(*device))
 		#	Check latest values from db
 		if Alert.CheckDeviceValues(conn, device[0]) > 0:
 			# If time from the last email is >1h and device error has been >1h
@@ -70,8 +71,15 @@ def main(pathDB):
 		message = "{0} device(s) has issues!\n".format(totalErrors)
 		message += log;
 		#	Send an email to the address defined in settings table
-		print "Send email:"
-		print message
+
+		cur.execute("SELECT email FROM Settings")
+		address = cur.fetchone()
+		if address is not None:
+			address = address[0]
+			smtp.SendMail(address, message)
+
+		print("Send email to {0}:".format(address))
+		print(message)
 	conn.close()
 ########## END of main
 
@@ -79,4 +87,4 @@ if __name__ == "__main__":
 	if len(sys.argv) == 2:
 		main(sys.argv[1])
 	else:
-		print "Usage: ./Main.py [path-to-db]"
+		print("Usage: ./Main.py [path-to-db]")
