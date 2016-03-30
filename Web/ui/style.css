@@ -96,6 +96,22 @@ h1{
   background-color: rgba(120,180,255,0.8);
 }
 
+#logTable{
+  text-align: center;
+  width: 90%;
+  padding: 5px;
+  margin:auto;
+  margin-top: 15px;
+  color: white;
+  border: 1px solid #00001A;
+  border-radius: 5px;
+  background-color: rgba(0,0,0,0.8);
+}
+
+#logTable th:hover{
+  color: #0055DD;
+}
+
 #setupTable td {
   text-align: right;
 }
@@ -190,6 +206,10 @@ select{
 
 .punainen {
   color: red;
+}
+
+.oranssi {
+  color: orange;
 }
 
 .dataTable {

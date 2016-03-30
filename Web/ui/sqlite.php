@@ -84,16 +84,21 @@ function getSettings()
 	return $data;
 }
 
-function updateLog($filters, $orderBy, $isAsc)
+function updateLog($devFilter, $tFilter, $orderBy, $isAsc)
 {
 	$db = connect();
 	$rows = array();
 	
-	if($filters == null)
-	{
-		$filters = "";
-	}
-	$results = $db->query("SELECT * FROM Log ORDER BY " . $orderBy . " " . $isAsc);
+	if($devFilter != "")
+		$query = "SELECT * FROM Log WHERE deviceName = '" . $devFilter ."' ORDER BY " . $orderBy . " " . $isAsc ;
+	else if($tFilter != "")
+		$query = "SELECT * FROM Log WHERE type = '" . $tFilter ."' ORDER BY " . $orderBy . " " . $isAsc ;
+	else if($typeFilter != "" && $devFilter != "")
+		$query = "SELECT * FROM Log WHERE type = '" . $tFilter ."' AND deviceName = '" . $devFilter . " ORDER BY " . $orderBy . " " . $isAsc;
+	else
+		$query = "SELECT * FROM Log ORDER BY " . $orderBy . " " . $isAsc;
+
+	$results = $db->query($query);
 	while($row = $results->fetchArray(SQLITE3_ASSOC))
 	{
 		array_push($rows, $row);

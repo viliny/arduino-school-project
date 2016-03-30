@@ -10,7 +10,8 @@ var tempTrshld;	//Temperature treshold for alerts
 var lidSwitchTrshlTime; //How long the lid must be open to send an alert
 var orderBy = "timeStamp"; //for logs, to order by what column
 var isAsc = "ASC"; //is the order ascending or descending
-var filters = []; //to filter out f.e. devices or alert types from logs
+var tFilter = ""; //to filter out alert types from logs
+var devFilter = "";
 
 	$('li').click(function(){
 		$(menuselected).attr('class','');
@@ -415,28 +416,113 @@ exportToCsv = function(){
 				mode: "updateLog",
 				orderBy: orderBy,
 				isAsc: isAsc,
-				filters: filters
+				devFilter: devFilter,
+				tFilter: tFilter
 			},//datan päättävä
 			success: function(data){
 				var html;
+				var deviceFilters = [];
+				var typeFilters = [];
+
+
 				$(data).each(function(){
+					
+					if($.inArray(this.deviceName, deviceFilters) < 0)
+					{
+						deviceFilters.push(this.deviceName);
+					}
+					
+					if($.inArray(this.type, typeFilters) < 0)
+					{
+						typeFilters.push(this.type);
+					}
+					
 					html += "<tr>";
 					html += 	"<td>" + this.deviceName + "</td>";
-					html +=		"<td>" + this.type + "</td>";
+					if(this.type == "error")
+						html +=		"<td class='punainen'>" + this.type + "</td>";
+					else if(this.type == "alert")
+						html +=		"<td class='oranssi'>" + this.type + "</td>";
+					else
+						html +=		"<td>" + this.type + "</td>";
 					html +=		"<td>" + this.msg + "</td>";
-					html +=		"<td>" + this.timeStamp + "</td>";
+					
+					var timeStamp = new Date(this.timeStamp * 1000);
+					var m = timeStamp.getMinutes();
+					var h = timeStamp.getHours();
+					var d = timeStamp.getDate();
+					var kk = timeStamp.getMonth() + 1;
+					var y = timeStamp.getFullYear();
+					m = leadingZeros(m);
+					h = leadingZeros(h);
+					d = leadingZeros(d);
+					kk = leadingZeros(kk);
+					html +=		"<td>" + d + "." + kk + "." + y + " - " + h + ":" + m + "</td>";
 					html +=	"<tr>";
 				});//eachin päättävä
 				$("#logTable").html("<tr><th onClick='headerClick(this)'>Laite</th><th onClick='headerClick(this)'>Tyyppi</th><th onClick='headerClick(this)'>Viesti</th><th onClick='headerClick(this)'>Aika</th></tr>");
+				$("#logTable").append("<tr>" +
+								"<td>" +
+									"<select id='deviceFilter'>" +
+									"</select>" +
+								"</td>" +
+								"<td>" +
+									"<select id='typeFilter'>" +
+									"</select>" +
+								"</td>" +
+								"<td>" +
+								"</td>" +
+								"<td>" +
+								"</td>" +
+							"</tr>");
 				$("#logTable").append(html);
+				
+				//login filtterien toiminta alle
+				
+				$('#deviceFilter')
+					.append($('<option>', { value : "" })
+					.text(""));
+					
+				$('#typeFilter')
+					.append($('<option>', { value : "" })
+					.text(""));
+				
+				$('#deviceFilter')
+					.append($('<option>', { value : "" })
+					.text("Nollaa Suodatin"));
+					
+				$('#typeFilter')
+					.append($('<option>', { value : "" })
+					.text("Nollaa Suodatin"));
+				
+				$(deviceFilters).each(function(){
+					 $('#deviceFilter')
+					.append($('<option>', { value : this })
+					.text(this)); 
+				});
+					
+				$(typeFilters).each(function(){
+					$('#typeFilter')
+					.append($('<option>', { value : this })
+					.text(this)); 
+				});
+				
+				$('#deviceFilter').change(function(event){
+					devFilter = this.value;
+					updateLog();
+				});
+				
+				$('#typeFilter').change(function(event){
+					tFilter = this.value;
+					updateLog();
+				});
+				
 			},
 			error: function(request, error){
 				alert("ERROR: " + error);
 				console.debug(request);
 			}
-		});//ajaxin päättävä
-		
-		
+		});//ajaxin päättävä	
 	}
 
 headerClick = function(e){

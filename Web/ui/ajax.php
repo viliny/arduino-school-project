@@ -42,7 +42,7 @@ switch($_REQUEST['mode']) {
 		echo($output);
 	break;
 	case "updateLog":
-		$output = updateLog($_REQUEST['filters'],$_REQUEST['orderBy'], $_REQUEST['isAsc']);
+		$output = updateLog($_REQUEST['devFilter'],$_REQUEST['tFilter'],$_REQUEST['orderBy'], $_REQUEST['isAsc']);
 		$output = json_encode($output);
 		echo($output);
 	break;
