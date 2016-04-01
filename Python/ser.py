@@ -3,6 +3,7 @@ import sys
 import serial
 import ParseStatus
 import time
+import Database
 
 
 # port = '/dev/ttyUSB0'
@@ -24,8 +25,8 @@ def ReadStatus(port, speed, pathdb):
     ser.flushInput()
 
     time.sleep(2)
-    print("Sending epoch to master node: ", epoch)
     epoch = str(int(time.time()))
+    print("Sending epoch to master node: ", epoch)
     ser.write(bytes(epoch,'UTF-8'))
     time.sleep(2)
     print ("Fetching data...")
@@ -55,4 +56,5 @@ if __name__ == "__main__":
     if len(sys.argv) == 4:
         dbpath = sys.argv[3]
 
+    Database.InitDataBase(dbpath)
     ReadStatus(sys.argv[1], sys.argv[2], dbpath)

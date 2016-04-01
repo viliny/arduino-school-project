@@ -5,8 +5,8 @@ import sqlite3
 
 class DataRecord:
     def __init__(self):
-        self.aliases = {"ND" : "deviceId", "HU" : "humidity", "TP" : "temp", "LS" : "lidSwitchOpen", "WL" : "waterLevelLow", "BC" : "batteryStatus", "EP" : "measureTime"}
-        self.types = {"deviceId" : str, "humidity" : "numeral", "temp" : "numeral", "lidSwitchOpen" : "bool", "waterLevelLow" : "bool", "batteryStatus" : str, "measureTime" : "numeral"}
+        self.aliases = {"ND" : "deviceId", "HU" : "humidity", "TP" : "temp", "LS" : "lidSwitchOpen", "WL" : "waterLevelLow", "BC" : "batteryStatus", "BL": "chargingStatus", "EP" : "measureTime"}
+        self.types = {"deviceId" : str, "humidity" : "numeral", "temp" : "numeral", "lidSwitchOpen" : "bool", "waterLevelLow" : "bool", "batteryStatus" : str, "chargingStatus": "numeral", "measureTime" : "numeral"}
         self.data = {};
     def ValidateData(self):
         for key, alias in self.aliases.items():
@@ -34,8 +34,8 @@ class DataRecord:
             print(key, " ", alias, " ", dbtype, " ", self.data[alias])
         return True
     def InsertDB(self, conn):
-        tupl = (self.data['deviceId'], self.data['humidity'], self.data['temp'], self.data['lidSwitchOpen'], self.data['waterLevelLow'], self.data['batteryStatus'], self.data['measureTime'])
-        conn.execute("INSERT INTO Data VALUES (?, ?, ?, ?, ?, ?, ?)", tupl);
+        tupl = (self.data['deviceId'], self.data['humidity'], self.data['temp'], self.data['lidSwitchOpen'], self.data['waterLevelLow'], self.data['batteryStatus'], self.data['chargingStatus'], self.data['measureTime'])
+        conn.execute("INSERT INTO Data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tupl);
 
 def Parse(pathDB, status):
     # if db not found make return
