@@ -10,9 +10,15 @@ import Database
 # port = 'COM5'
 # speed = 57600
 
+def SendEpoch(serial):
+    epoch = str(int(time.time()))
+    print("Sending epoch to master node: ", epoch)
+    serial.write(bytes(epoch,'UTF-8'))
+    return int(epoch)
+
 def ReadStatus(port, speed, pathdb):
     try:
-        ser = serial.Serial(port, speed, parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
+        ser = serial.Serial(port, speed, timeout=60, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
         print("Connecting to", port + " at speed:", str(speed) + "...")
     except:
       print("Could not connect ", port)
@@ -25,20 +31,24 @@ def ReadStatus(port, speed, pathdb):
     ser.flushInput()
 
     time.sleep(2)
-    epoch = str(int(time.time()))
-    print("Sending epoch to master node: ", epoch)
-    ser.write(bytes(epoch,'UTF-8'))
+    #   Send current time to nodes
+    epochSentTime = SendEpoch(ser)
     time.sleep(2)
     print ("Fetching data...")
     time.sleep(1)
 
     try:
         while True:
-        	datain = ser.readline()
-        	datain = datain.decode().replace('\n', '').replace('\r', '')
-        	print("Received: ", datain)
-        	if datain.startswith("ND") and not pathdb == "":
-        	   ParseStatus.Parse(pathdb, datain)
+            datain = ser.readline()
+            datain = datain.decode().replace('\n', '').replace('\r', '') # remove line endings
+            print("Received: ", datain)
+            #   If database is given, try parsing
+            if datain.startswith("ND") and not pathdb == "":
+                ParseStatus.Parse(pathdb, datain)
+            epoch = int(time.time())
+            #   Update epoch every 30 mins
+            if epoch-epochSentTime > 1800:
+                epochSentTime = SendEpoch(ser)
     except KeyboardInterrupt:
         ser.close()
         print()
