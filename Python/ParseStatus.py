@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import time
 import os.path
 import sqlite3
 
@@ -36,6 +37,7 @@ class DataRecord:
     def InsertDB(self, conn):
         tupl = (self.data['deviceId'], self.data['humidity'], self.data['temp'], self.data['lidSwitchOpen'], self.data['waterLevelLow'], self.data['batteryStatus'], self.data['chargingStatus'], self.data['measureTime'])
         conn.execute("INSERT INTO Data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tupl);
+        conn.execute("UPDATE Device SET lastUpdate=? WHERE deviceId=?", (int(time.time()), self.data['deviceId']))
 
 def Parse(pathDB, status):
     # if db not found make return
@@ -76,7 +78,7 @@ def Parse(pathDB, status):
         return False
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        Parse("./monitor.db", sys.argv[1])
+    if len(sys.argv) == 3:
+        Parse(sys.argv[1], sys.argv[2])
     else:
-        print("Error: Check arguments")
+        print("Usage: <pathDB> <string-to-parse>")
