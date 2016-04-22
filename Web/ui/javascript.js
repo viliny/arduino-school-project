@@ -143,6 +143,7 @@ var devFilter = "";
 					{
 						$(boxContent).html("<table style='width: 100%;' class='dataTable'><tr style='width: 100%;' class='punainen' ><td style='width: 100%;'>Laitteella ei ole dataa</td></tr></table>");
 					}else{
+					console.log(data);
 					var time = new Date(data.measureTime * 1000);
 					var h = time.getHours();
 					var m = time.getMinutes();
