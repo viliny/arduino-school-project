@@ -22,6 +22,7 @@
 						<li style="background-image: url('images/Tilastot.png');" >Tilastot</li>
 						<li style="background-image: url('images/Asetukset.png');" >Asetukset</li>
 						<li style="background-image: url('images/Log.png');" >Logi</li>
+						<li style="background-image: url('images/Manual.png');">Käyttöohjeet</li>
 					</ul>
 				</div>
 				<div id='mainContent'>
@@ -90,6 +91,12 @@
 								</td>
 							</tr>
 						</table>
+					</div>
+					<div class='views' style='display: none' id='manualView'>
+						<h1>Käyttöohjeet</h1>
+						
+						
+						
 					</div>
 				</div>
 			</div>

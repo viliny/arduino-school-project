@@ -24,6 +24,7 @@ var devFilter = "";
 			$('#dataView').fadeOut('fast');
 			$('#setupView').fadeOut('fast');
 			$('#logView').fadeOut('fast');
+			$('#manualView').fadeOut('fast');
 		}
 		
 		if($(menuselected).text() == 'Tilastot')
@@ -32,6 +33,7 @@ var devFilter = "";
 			$('#dataView').fadeIn('fast');
 			$('#setupView').fadeOut('fast');
 			$('#logView').fadeOut('fast');
+			$('#manualView').fadeOut('fast');
 		}
 		
 		if($(menuselected).text() == 'Asetukset')
@@ -40,6 +42,7 @@ var devFilter = "";
 			$('#dataView').fadeOut('fast');
 			$('#setupView').fadeIn('fast');
 			$('#logView').fadeOut('fast');
+			$('#manualView').fadeOut('fast');
 		}
 		
 		if($(menuselected).text() == 'Logi')
@@ -48,6 +51,16 @@ var devFilter = "";
 			$('#dataView').fadeOut('fast');
 			$('#setupView').fadeOut('fast');
 			$('#logView').fadeIn('fast');
+			$('#manualView').fadeOut('fast');
+		}
+		
+		if($(menuselected).text() == 'Käyttöohjeet')
+		{
+			$('#mainView').fadeOut('fast');
+			$('#dataView').fadeOut('fast');
+			$('#setupView').fadeOut('fast');
+			$('#logView').fadeOut('fast');
+			$('#manualView').fadeIn('fast');
 		}
 	});
 	
