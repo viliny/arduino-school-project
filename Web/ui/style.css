@@ -292,3 +292,11 @@ li:hover {
   margin-right:5px;
   margin-top: 5px;
 }
+
+h3{
+  text-align: center;
+}
+
+#manualContainer{
+  padding: 20px;
+}

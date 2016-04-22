@@ -93,10 +93,65 @@
 						</table>
 					</div>
 					<div class='views' style='display: none' id='manualView'>
-						<h1>Käyttöohjeet</h1>
-						
-						
-						
+						<div id='manualContainer'>
+							<h1>Käyttöohjeet</h1>
+							<p class='manualText'>
+								Remote Monitoring mahdollistaa ilman kosteusprosentin, lämpötilan ja vedenpinnan korkeuden seuraamisen
+								testiympäristössä. Järjestelmä lähettää myös hälytyksiä sähköpostiin, jos olosuhteet muuttuvat käyttäjän
+								asettamien raja-arvojen ulkopuolelle.
+							</p>
+							<h3>Käyttöliittymä</h3>
+							<p class='manualText'>
+								Käyttöliittymä avautuu normaalisti seurantatietokoneen käynnistyessä. Jos käyttöliittymä halutaan välillä sulkea,
+								sen saa takaisin käynnistämällä tietokoneen selaimen.
+							</p>
+							<h4>Päänäkymä</h4>
+							<p class='manualText'>
+								Päänäkymässä voi lisätä testilaitteita ja seurata testilaitteiden arvoja. Laitteen lisääminen tapahtuu
+								painamalla "Lisää uusi" -kentässä olevaa '+' -symbolia. Tämän jälkeen syötetään avautuneeseen ikkunaan
+								laitteen ID-numero, joka löytyy testilaitteen kyljestä. Voit myös nimetä laitteen haluamallasi tavalla.
+								</br></br>
+								Laitteen lisättyäsi pystyt seuraamaan laitteen nimellä otsikoidusta kentästä laitteen viimeisimpiä mittausarvoja.
+								Jos arvot ovat käyttäjän asettamien raja-arvojen ulkopuolella, fontin väri vaihtuu punaiseksi.
+								</br></br>
+								Laitteen poistaminen tapahtuu otsikkokentässä olevaa rastia painamalla. Huomioithan, että laitteen poistaminen
+								poistaa myös laitteella mitatun testidatan tietokannasta!
+							</p>
+							<h4>Tilastot</h4>
+							<p class='manualText'>
+								Tilastot sivulla voi luoda graafisia kaavioita testiympäristön kosteudesta ja lämpötilasta, sekä viedä testidatan
+								csv-tiedostoksi.
+								</br></br>
+								Valitse vetovalikosta haluamasi testilaite. Valitse aloitus- ja lopetuspäivämäärät päivämääränvalitsimilla ja paina
+								sen jälkeen "Luo Tilasto" -nappia. Jos valitsemallasi aikavälillä on testausdataa, tulee näytölle näkyviin 
+								viivadiagrammi kyseisen aikavälin olosuhteista. Voit zoomata dataa maalaamalla hiirellä haluamasi aikaväli.
+								</br></br>
+								Kun haluat viedä valitsemasi testidatan .csv-tiedostoksi, paina "vie" -nappia, jonka jälkeen selain tallentaa tiedoston
+								tietokoneelle. Huomaathan, että tämä tyhjentää datan tietokannasta, joten on suositeltavaa viedä data .csv:ksi vasta,
+								kun kyseinen testijakso on saatu päätökseen.
+							</p>
+							<h4>Asetukset</h4>
+							<p class='manualText'>
+								Asetukset sivulla saa määriteltyä sähköpostiosoitteen, johon mahdolliset hälytykset tulevat, sekä raja-arvot kosteudelle,
+								lämpötilalle ja kannen maksimiaukioloajalle. Asetuksien tallentaminen tapahtuu "Päivitä asetukset" -nappia painamalla.
+							</p>
+							<h4>Logi</h4>
+							<p class='manualText'>
+								Logi näyttää testilaitteiden status-tietoja. Logista näet esimerkiksi viimeisimmät hälytykset ja onnistuneet datan noudot
+								testilaitteilta.</br></br>
+								Voit suodattaa logiin näkymään vain tietyn testilaitteen, tai kaikki. Voit vaihtaa login järjestystä klikkaamalla otsikkokenttiä.
+								Näin saat vaihdettua myös järjestyksen nousevasta laskevaan ja päinvastoin.
+							</p>
+							<h4>Käyttöohjeet</h4>
+							<p class='manualText'>
+								Käyttöohjeet sivu sisältää tämän käyttöohjeen.
+							</p>
+							<h3>Testilaite</h3>
+							<p class='manualText'>
+								Testilaite mittaa testiympäristön olosuhteita ja lähettää datan tietokoneelle, jossa data tallennetaan tietokantaan.
+								Laite toimii langattomasti ja virransyöttö tapahtuu akkuvarmistetulla langattomalla induktiopiirillä.
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
