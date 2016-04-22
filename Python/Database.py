@@ -9,7 +9,7 @@ def InitDataBase(name):
 	if doInit:
 		print("No " + name + " found, creating new.")
 		conn.execute('''CREATE TABLE Device(deviceId text, lastUpdate integer, deviceName text, error integer)''')
-		conn.execute('''CREATE TABLE Data(deviceId text, humidity real, temp real, lidSwitchOpen integer, waterLevelLow integer, batteryStatus text, chargingStatus integer, measureTime integer)''')
+		conn.execute('''CREATE TABLE Data(deviceId text, humidity real, temp real, lidSwitchOpen integer, waterLevelLow integer, batteryStatus text, measureTime integer)''')
 		conn.execute('''CREATE TABLE Settings(email text, name text, lang text, humidityTrshld integer, tempTrshld integer, lidSwitchTrshldTime integer)''')
 		conn.execute('''CREATE TABLE Log(type text, msg text, deviceName text, mailSent integer, timeStamp integer)''')
 		conn.commit()
